@@ -21,7 +21,6 @@ const renderOptions = (content: TPostContent) => ({
 });
 
 const PostBody: React.FC<PostBodyProps> = ({ content }) => {
-  console.log(content);
   return (
     <PostContainer>
       {documentToReactComponents(content.json, renderOptions(content))}

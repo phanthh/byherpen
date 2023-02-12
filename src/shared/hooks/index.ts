@@ -5,13 +5,14 @@ export const useStuck = <T extends HTMLElement>() => {
   const ref = useRef<T>(null);
 
   useEffect(() => {
+    let cachedRef = ref.current;
     const observer = new IntersectionObserver(
       ([e]) => setStuck(e.intersectionRatio < 1),
       { threshold: [1] }
     );
-    ref.current && observer.observe(ref.current);
+    cachedRef && observer.observe(cachedRef);
     return () => {
-      ref.current && observer.unobserve(ref.current);
+      cachedRef && observer.unobserve(cachedRef);
     };
   }, [ref]);
 

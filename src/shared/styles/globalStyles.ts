@@ -9,7 +9,6 @@ export const GlobalStyle = createGlobalStyle`
     font-family: ${font.abel};
 		color: ${color.fg200};
     background: ${color.bg200};
-    transition: all 250ms ease-in-out;
   }
 
   a {

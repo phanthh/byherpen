@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { LangToggleButton } from "shared/components/Input/LangToggleButton";
 import { ThemeToggleButton } from "shared/components/Input/ThemeToggleButton";
-import { useStuck } from "shared/hooks";
+import { useScrollDown } from "shared/hooks";
 import { color, font, shadow, unit } from "shared/styles/tokens";
 import { TNavItem } from "shared/types/types";
 import styled, { css } from "styled-components";
@@ -11,124 +11,124 @@ import { NavDropdown } from "./NavDropdown";
 type NavBarProps = {};
 
 const navStruct: TNavItem[] = [
-	{
-		label: "home",
-		link: "/",
-	},
-	{
-		label: "about",
-		link: "/about",
-	},
-	{
-		label: "art",
-		link: "/art",
-		children: [
-			{
-				label: "slices of life",
-				link: "/art/slices-of-life",
-			},
-			{
-				label: "portfolio",
-				link: "/art/portfolio",
-			},
-		],
-	},
-	{
-		label: "byherpen",
-		link: "/",
-		center: true,
-	},
-	{
-		label: "life",
-		link: "/life",
-		children: [
-			{
-				label: "study",
-				link: "/life/study",
-			},
-			{
-				label: "by the kitchen",
+  {
+    label: "home",
+    link: "/",
+  },
+  {
+    label: "about",
+    link: "/about",
+  },
+  {
+    label: "art",
+    link: "/art",
+    children: [
+      {
+        label: "slices of life",
+        link: "/art/slices-of-life",
+      },
+      {
+        label: "portfolio",
+        link: "/art/portfolio",
+      },
+    ],
+  },
+  {
+    label: "byherpen",
+    link: "/",
+    center: true,
+  },
+  {
+    label: "life",
+    link: "/life",
+    children: [
+      {
+        label: "study",
+        link: "/life/study",
+      },
+      {
+        label: "by the kitchen",
 
-				link: "/life/by-the-kitchen",
-			},
-			{
-				label: "little stories",
-				link: "/life/little-stories",
-			},
-		],
-	},
-	{
-		label: "contact",
-		link: "/contact",
-		children: [
-			{
-				label: "youtube",
-				link: "#",
-			},
-			{
-				label: "instagram",
-				link: "#",
-			},
-			{
-				label: "pinterest",
-				link: "#",
-			},
-		],
-	},
+        link: "/life/by-the-kitchen",
+      },
+      {
+        label: "little stories",
+        link: "/life/little-stories",
+      },
+    ],
+  },
+  {
+    label: "contact",
+    link: "/contact",
+    children: [
+      {
+        label: "youtube",
+        link: "#",
+      },
+      {
+        label: "instagram",
+        link: "#",
+      },
+      {
+        label: "pinterest",
+        link: "#",
+      },
+    ],
+  },
 ];
 
-export const NavBar: React.FC<NavBarProps> = ({ }) => {
-	const [ref, stuck] = useStuck<HTMLDivElement>();
+export const NavBar: React.FC<NavBarProps> = ({}) => {
+  const scrollDown = useScrollDown();
 
-	const [dropdownState, setDropdownState] = useState({
-		show: false,
-		content: [] as TNavItem[] | undefined,
-	});
+  const [dropdownState, setDropdownState] = useState({
+    show: false,
+    content: [] as TNavItem[] | undefined,
+  });
 
-	const onCloseDropdown = () => {
-		setDropdownState((state) => ({ ...state, show: false }));
-	};
+  const onCloseDropdown = () => {
+    setDropdownState((state) => ({ ...state, show: false }));
+  };
 
-	return (
-		<>
-			<NavBarContainer ref={ref} onMouseLeave={onCloseDropdown} $stuck={stuck}>
-				<NavBarList $stuck={stuck}>
-					{navStruct.map((navItem) => (
-						<NavBarItem key={navItem.label}>
-							<NavLink
-								$center={navItem.center}
-								href={navItem.link}
-								{...(!!navItem.children
-									? {
-										onMouseEnter: () =>
-											setDropdownState((state) => ({
-												...state,
-												show: true,
-												content: navItem.children,
-											})),
-									}
-									: {})}
-							>
-								{navItem.label}
-							</NavLink>
-						</NavBarItem>
-					))}
-					<NavBarItem>
-						<ThemeToggleButton />
-						<LangToggleButton />
-					</NavBarItem>
-				</NavBarList>
-				<NavDropdown
-					dropdownState={dropdownState}
-					onCloseDropdown={onCloseDropdown}
-				/>
-			</NavBarContainer>
-		</>
-	);
+  return (
+    <>
+      <NavBarContainer onMouseLeave={onCloseDropdown} $hide={scrollDown}>
+        <NavBarList>
+          {navStruct.map((navItem) => (
+            <NavBarItem key={navItem.label}>
+              <NavLink
+                $center={navItem.center}
+                href={navItem.link}
+                {...(!!navItem.children
+                  ? {
+                      onMouseEnter: () =>
+                        setDropdownState((state) => ({
+                          ...state,
+                          show: true,
+                          content: navItem.children,
+                        })),
+                    }
+                  : {})}
+              >
+                {navItem.label}
+              </NavLink>
+            </NavBarItem>
+          ))}
+          <NavBarItem>
+            <ThemeToggleButton />
+            <LangToggleButton />
+          </NavBarItem>
+        </NavBarList>
+        <NavDropdown
+          dropdownState={dropdownState}
+          onCloseDropdown={onCloseDropdown}
+        />
+      </NavBarContainer>
+    </>
+  );
 };
 
 // @styles
-const NavBarContainer = styled.nav<{ $stuck: boolean }>`
+const NavBarContainer = styled.nav<{ $hide: boolean }>`
   position: sticky;
   top: -1px;
   width: 100%;
@@ -137,12 +137,19 @@ const NavBarContainer = styled.nav<{ $stuck: boolean }>`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  transition: background-color 0.5s ease-in-out;
   background-color: ${color.bg200};
   box-shadow: ${shadow.s2};
+
+  transition: transform 0.2s ease-in-out;
+
+  ${({ $hide }) =>
+    $hide &&
+    css`
+      transform: translateY(-100%);
+    `}
 `;
 
-const NavBarList = styled.ul<{ $stuck: boolean }>`
+const NavBarList = styled.ul`
   all: unset;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -153,7 +160,6 @@ const NavBarList = styled.ul<{ $stuck: boolean }>`
   align-items: center;
   gap: ${unit.m5};
   align-items: center;
-  transition: all 0.5ms ease-in-out;
 `;
 
 const NavBarItem = styled.li`
@@ -163,22 +169,17 @@ const NavBarItem = styled.li`
   align-items: center;
 `;
 
-const NavLink = styled(A) <{ $center?: boolean }>`
+const NavLink = styled(A)<{ $center?: boolean }>`
   margin: auto;
-  transition: all 100ms ease-in-out;
   font-family: ${font.abel};
   font-size: ${unit.f2};
   text-transform: uppercase;
   color: ${color.fg200};
   letter-spacing: 0.25rem;
-  transition: all 250ms ease-in-out;
-  border-bottom: 2px solid transparent;
-  &:hover {
-    border-bottom: 2px solid ${color.gray900};
-  }
+
   ${({ $center }) =>
-		!!$center &&
-		css`
+    !!$center &&
+    css`
       text-transform: lowercase;
       font-size: ${unit.f5};
       font-family: ${font.aurore};

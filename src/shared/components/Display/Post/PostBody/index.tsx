@@ -1,29 +1,37 @@
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { BLOCKS } from "@contentful/rich-text-types";
-import RichTextAsset from "../../RichTextAsset";
-import markdownStyles from "./markdown-styles.module.css";
+import { BLOCKS, NodeData } from "@contentful/rich-text-types";
+import { Container } from "shared/components/elements";
+import { TPostContent } from "shared/types/types";
+import styled from "styled-components";
+import PostBodyAsset from "../PostBodyAsset";
 
 type PostBodyProps = {
-  content: Document;
+  content: TPostContent;
 };
 
+const renderOptions = (content: TPostContent) => ({
+  renderNode: {
+    [BLOCKS.EMBEDDED_ASSET]: (node: NodeData) => (
+      <PostBodyAsset
+        id={node.data.target.sys.id}
+        assets={content.links.assets.block}
+      />
+    ),
+  },
+});
+
 const PostBody: React.FC<PostBodyProps> = ({ content }) => {
+  console.log(content);
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className={markdownStyles["markdown"]}>
-        {documentToReactComponents(content.json, {
-          renderNode: {
-            [BLOCKS.EMBEDDED_ASSET]: (node) => (
-              <RichTextAsset
-                id={node.data.target.sys.id}
-                assets={content.links.assets.block}
-              />
-            ),
-          },
-        })}
-      </div>
-    </div>
+    <PostContainer>
+      {documentToReactComponents(content.json, renderOptions(content))}
+    </PostContainer>
   );
 };
+
+const PostContainer = styled(Container).attrs({
+  as: "article",
+})`
+`;
 
 export default PostBody;

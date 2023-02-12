@@ -1,7 +1,7 @@
 import Image, { ImageProps } from "next/image";
 import Link from "next/link";
 import { color, font, shadow, unit } from "shared/styles/tokens";
-import styled, { css, StyledProps } from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -14,31 +14,22 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
-export const FlexCol = styled.div<{ gap?: string }>`
-  display: flex;
-  flex-direction: column;
-  ${({ gap }) =>
-		!!gap &&
-		css`
-      gap: ${gap};
-    `}
-`;
-
-export const FlexRow = styled.div<{ gap?: string }>`
-  display: flex;
-  flex-direction: row;
-  ${({ gap }) =>
-		!!gap &&
-		css`
-      gap: ${gap};
-    `}
+const linkStyle = css`
+  text-decoration: none;
+  transition: border-bottom 250ms ease-in-out;
+  border-bottom: 2px solid transparent;
+  &:hover {
+    border-bottom: 2px solid ${color.primary200};
+  }
 `;
 
 export const A = styled(Link)`
-  text-decoration: none;
+  ${linkStyle}
 `;
 
-export const Button = styled.button``;
+export const EA = styled.a`
+  ${linkStyle}
+`;
 
 export const H1 = styled.h1`
   font-weight: 200;
@@ -48,44 +39,40 @@ export const H1 = styled.h1`
   text-transform: uppercase;
 `;
 
+export const Img = styled(Image).attrs<ImageProps>({
+  fill: true,
+})`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+`;
+
+export const ImgContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+`;
+
 export const P = styled.p`
   font-family: ${font.abel};
   font-size: ${unit.f2};
   color: ${color.fg200};
 `;
 
-export const Img = styled.img``;
-
-export const NextImage = styled(Image) <StyledProps<ImageProps>>`
-  ${({ width }) =>
-		width !== undefined &&
-		css`
-      width: ${width}px;
-    `}
-  ${({ height }) =>
-		height !== undefined &&
-		css`
-      width: ${height}px;
-    `}
-`;
-
-export const Card = styled.div`
-  border-radius: ${unit.r4};
-  box-shadow: ${shadow.s1};
-`;
-
-export const ToggleButton = styled(Button)`
+export const Button = styled.button`
   all: unset;
-  width: 25px;
-  height: 25px;
+  box-shadow: ${shadow.s1};
+  transition: box-shadow 0.1s ease-in-out;
   border: 1px solid ${color.primary200};
   border-radius: ${unit.r3};
-  padding: ${unit.p2};
-  color: ${color.primary200};
-  box-shadow: ${shadow.s1};
-  transition: all 0.1s ease-in-out;
 
   &:active {
     box-shadow: none;
   }
+`;
+
+export const ToggleButton = styled(Button)`
+  width: 25px;
+  height: 25px;
+  padding: ${unit.p2};
+  color: ${color.primary200};
 `;

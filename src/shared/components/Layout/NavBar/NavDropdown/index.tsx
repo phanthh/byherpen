@@ -5,50 +5,50 @@ import { useThemeStore } from "shared/stores/theme.store";
 import { color, font, shadow, unit } from "shared/styles/tokens";
 import { TNavItem } from "shared/types/types";
 import styled from "styled-components";
-import Branch from "shared/assets/branch.svg";
-import Flower from "shared/assets/flower_icon.svg";
+import Branch from "shared/assets/decors/branch.svg";
+import Flower from "shared/assets/icons/flower.svg";
 
 type NavDropdownProps = {
-	dropdownState: {
-		show: boolean;
-		content?: TNavItem[];
-	};
-	onCloseDropdown: () => void;
+  dropdownState: {
+    show: boolean;
+    content?: TNavItem[];
+  };
+  onCloseDropdown: () => void;
 };
 
 export const NavDropdown: React.FC<NavDropdownProps> = ({
-	dropdownState,
-	onCloseDropdown,
+  dropdownState,
+  onCloseDropdown,
 }) => {
-	const { toggleTheme, theme } = useThemeStore();
-	const { show, content } = dropdownState;
-	const transitions = useTransition(show, {
-		from: { height: 0, opacity: -1 },
-		enter: { height: 300, opacity: 1 },
-		leave: { height: 0, opacity: -1 },
-	});
-	return transitions(
-		(style, item) =>
-			item &&
-			!!content && (
-				<NavDropdownContainer style={style}>
-					<NavDropdownList>
-						{content.map((content) => (
-							<NavDropdownItem key={content.label}>
-								<NavDropdownLink href={content.link}>
-									{content.label}
-								</NavDropdownLink>
-							</NavDropdownItem>
-						))}
-						<NavDropdownCloseButton onClick={onCloseDropdown}>
-							<FlowerIcon />
-						</NavDropdownCloseButton>
-					</NavDropdownList>
-					<BranchDecorLeft />
-					<BranchDecorRight />
-				</NavDropdownContainer>
-			)
-	);
+  const { toggleTheme, theme } = useThemeStore();
+  const { show, content } = dropdownState;
+  const transitions = useTransition(show, {
+    from: { height: 0, opacity: -1 },
+    enter: { height: 300, opacity: 1 },
+    leave: { height: 0, opacity: -1 },
+  });
+  return transitions(
+    (style, item) =>
+      item &&
+      !!content && (
+        <NavDropdownContainer style={style}>
+          <NavDropdownList>
+            {content.map((content) => (
+              <NavDropdownItem key={content.label}>
+                <NavDropdownLink href={content.link}>
+                  {content.label}
+                </NavDropdownLink>
+              </NavDropdownItem>
+            ))}
+            <NavDropdownCloseButton onClick={onCloseDropdown}>
+              <FlowerIcon />
+            </NavDropdownCloseButton>
+          </NavDropdownList>
+          <BranchDecorLeft />
+          <BranchDecorRight />
+        </NavDropdownContainer>
+      )
+  );
 };
 
 const NavDropdownContainer = styled(animated.div)`
@@ -80,18 +80,12 @@ const NavDropdownItem = styled.li`
 
 const NavDropdownLink = styled(A)`
   padding: ${unit.p3} ${unit.p5};
-  transition: all 100ms ease-in-out;
   font-family: ${font.abel};
   font-size: ${unit.f2};
   text-transform: uppercase;
   text-align: center;
-  color: ${color.gray900};
+  color: ${color.fg200};
   letter-spacing: 0.25rem;
-  transition: all 250ms ease-in-out;
-  border-bottom: 2px solid transparent;
-  &:hover {
-    border-bottom: 2px solid ${color.gray900};
-  }
 `;
 
 const NavDropdownCloseButton = styled.button`
@@ -103,11 +97,10 @@ const NavDropdownCloseButton = styled.button`
   left: calc(50% - 25px);
   text-align: center;
   margin-top: auto;
-  transition: all 250ms ease-in-out;
-  border: 1px solid transparent;
+  transition: transform 250ms, border 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
-    transform: scale(1.1) rotate(90deg);
-    border-color: ${color.gray300};
+    transform: scale(1.1) rotate(360deg);
   }
 `;
 
@@ -129,4 +122,5 @@ const BranchDecorRight = styled(Branch)`
 const FlowerIcon = styled(Flower)`
   height: 40px;
   width: 40px;
+  color: ${color.primary200};
 `;
